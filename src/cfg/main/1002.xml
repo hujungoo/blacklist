@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xmlns="http://www.brilliance.com.cn/interface" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.brilliance.com.cn/interface ../etc/schema/interface.xsd">
+
+    <interface id="1002" type="server" version="2.0"
+               defaultScope="transaction">
+
+        <transaction id="request" version="2.0">
+            <step id="1">
+                <connection ref="jdbcconn"/>
+                <filter ref="sqlFilter" type="in">
+                    <field tag="content" value="${this[0]}"/>
+                    <field tag="hitcfgid" value="${this[1]}"/>
+                    <field tag="whitcfgid" value="${this[2]}"/>
+                    <field tag="dtdetectflow_inr" value="${__this.getCNTinr1('dtdetectflow')}"/>
+                    <field tag="besref" value="${formatNow('yyMMddHH')}${dtdetectflow_inr}"/>
+                </filter>
+
+                <filter ref="xmlFilter" type="in" via="${content}" encoding="#{ENCODING}">
+                    <field tag="icode" etag="BES.ICODE"/>
+                    <field tag="own" etag="BES.OWN"/>
+                    <field tag="orgid" etag="BES.ORGID"/>
+                    <field tag="userid" etag="BES.USERID"/>
+                    <field tag="owntaskdesc" etag="BES.OWNTASKDESC"/>
+                    <field tag="ownref" etag="BES.OWNREF"/>
+                    <field tag="msgtype" etag="BES.MSGS.MSG@MSGTYPE"/>
+                    <field tag="value" etag="BES.MSGS.MSG.VALUE"/>
+                    <field tag="packInfo" value="${MTUnPackMessage:getSwfMsgInfoViaMsg(value)}"/>
+                    <field tag="mty" value="${packInfo.get('mty')}"/>
+
+                    <field tag="supportMsgTypeList" type="arraylist"/>
+                    <field value="${supportMsgTypeList.add('103')}"/>
+                    <field value="${supportMsgTypeList.add('202')}"/>
+                    <field value="${supportMsgTypeList.add('202COV')}"/>
+                    <field value="${supportMsgTypeList.add('910')}"/>
+                    <validator condition="${supportMsgTypeList.contains(mty)}" description="不支持的报文类型[${mty}]"/>
+
+                    <call tag="ret" type="sub" interfaceName="SWT${mty}" transactionName="parse"
+                          scope="transaction">
+                        <argument value="${value}"/>
+                        <argument value="${besref}"/>
+                        <argument value="${hitcfgid}"/>
+                        <argument value="${whitcfgid}"/>
+                    </call>
+                    <field tag="result" value="${ret.content}"/>
+                </filter>
+
+                <filter ref="xmlFilter" type="out" encoding="#{ENCODING}">
+                    <field tag="rlevel_last" value="0"/>
+                    <field tag="rpercent_max" value="0"/>
+                    <field tag="count" value="${result.size()}"/>
+
+                    <field etag="BES@COUNT" value="${count}"/>
+                    <field etag="BES.ICODE" value="${icode}"/>
+                    <field etag="BES.OWN" value="${own}"/>
+                    <field etag="BES.STATUS" value="1"/>
+                    <field etag="BES.OWNREF" value="${ownref}"/>
+                    <field etag="BES.BESREF" value="${besref}"/>
+                    <foreach tag="i" end="${count}">
+                        <field etag="BES.MSGS.MSG(${i})@MSGTYPE" value="${msgtype}"/>
+                        <field etag="BES.MSGS.MSG(${i}).MSGID" value="${result[i]['MSGID']}"/>
+                        <field etag="BES.MSGS.MSG(${i}).DESC" value="${result[i]['DESC']}"/>
+                        <field etag="BES.MSGS.MSG(${i}).SVALUE" value="${result[i]['SVALUE']}"/>
+                        <field tag="rlevel" value="${result[i]['RLEVEL']}"/>
+                        <field etag="BES.MSGS.MSG(${i}).RLEVEL" value="${null == rlevel?'0':rlevel}"/>
+                        <field tag="rpercent" value="${result[i]['RPERCENT']}"/>
+                        <field etag="BES.MSGS.MSG(${i}).RPERCENT" value="${null == rpercent?'0':rpercent}"/>
+                        <field tag="rlevel_last" value="${rlevel_last=='1'?rlevel_last:rlevel}"/>
+                        <field tag="rpercent_max" value="${rpercent>rpercent_max?rpercent:rpercent_max}"/>
+                    </foreach>
+                    <field etag="BES.RLEVEL" value="${rlevel_last}"/>
+                    <field etag="BES.RPERCENT" value="${rpercent_max}"/>
+                </filter>
+
+                <filter ref="sqlFilter" type="in">
+                    <field etag="insert into dtdetectflow(inr,detectid,detecttype,reqsource,detectcontent,detecttime,detectresult,bluser,sourceflowno,sourceorgan,msgtype,msgtypecode) values(?,?,'3',?,?,current_timestamp,?,?,?,?,?,?)">
+                        <argument value="${dtdetectflow_inr}"/>
+                        <argument value="${besref}"/>
+                        <argument value="${own}"/>
+                        <argument value="${value}"/>
+                        <argument value="${rlevel_last}"/>
+                        <argument value="${userid}"/>
+                        <argument value="${ownref}"/>
+                        <argument value="${orgid}"/>
+                        <argument value="${mty}"/>
+                        <argument value="${mty}"/>
+                    </field>
+                    <field etag="commit"/>
+                </filter>
+            </step>
+            <step id="exception">
+                <filter ref="xmlFilter" type="out" encoding="#{ENCODING}">
+                    <field etag="BES.ICODE" value="${icode}"/>
+                    <field etag="BES.OWN" value="${own}"/>
+                    <field etag="BES.OWNREF" value="${ownref}"/>
+                    <field etag="BES.BESREF" value="${besref}"/>
+                    <field etag="BES.STATUS" value="0"/>
+                    <field etag="BES.NOTE" value="${super.description}"/>
+                </filter>
+            </step>
+        </transaction>
+
+    </interface>
+
+</root>
+
+	
+	

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<codetables xmlns="http://www.brilliance.com.cn/codetable" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.brilliance.com.cn/codetable schema/codetable.xsd">
+    
+    <codetable id="gender">
+        <code id="M" value="男" />
+        <code id="F" value="女" />
+    </codetable>
+    <codetable id="currency">
+        <code id="001" value="CNY" />
+        <code id="002" value="USD" />
+        <code id="003" value="EUR" />
+        <code id="004" value="HKD" />
+        <code id="005" value="GBP" />
+        <code id="006" value="JPY" />
+        <code id="007" value="KRW" />
+        <code id="008" value="CAD" />
+        <code id="009" value="AUD" />
+    </codetable>
+
+    <codetable id="shotType2LimitName">
+        <code id="NAME" value="namelimit"/>
+        <code id="ADDRESS" value="addrlimit"/>
+        <code id="COUNTRY" value="cnylimit"/>
+        <code id="IDNUM" value="idnumlimit"/>
+        <code id="DATE" value="datelimit"/>
+        <code id="ROLE" value="rolelimit"/>
+    </codetable>
+
+</codetables>

@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xmlns="http://www.brilliance.com.cn/interface" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.brilliance.com.cn/interface ../etc/schema/interface.xsd">
+
+    <interface id="blacklist" type="server" version="2.0"
+               defaultScope="transaction">
+
+        <transaction id="shot" version="2.0">
+            <step id="123">
+                <filter ref="publicFilter" type="in">
+                    <field tag="content" value="${this[0]}"/>
+                    <field tag="shotTypes" value="${this[1]}"/>
+                    <field tag="msgid" value="${this[2]}"/>
+                    <field tag="desc" value="${this[3]}"/>
+                    <field tag="besref" value="${this[4]}"/>
+                    <field tag="detecttype" value="${this[5]}"/>
+                    <field tag="hitcfgid" value="${this[6]}"/>
+                    <field tag="whitcfgid" value="${this[7]}"/>
+                    <field tag="original" value="${getArrayLen(this)==9?this[8]:''}"/>
+                    <field tag="shotTypesArr" value="${shotTypes.split(',')}"/>
+                </filter>
+                <connection ref="jdbcconn"/>
+                <filter ref="sqlFilter" type="in">
+
+                    <field tag="shotdegree_tmp" type="map"/>
+                    <field tag="dtdetectresult_inr_tmp" type="map"/>
+                    <field tag="ret" type="map"/>
+
+                    <field value="${ret.put('MSGID',msgid)}"/>
+                    <field value="${ret.put('DESC',desc)}"/>
+                    <field value="${ret.put('SVALUE',isEmpty(original)?content:original)}"/>
+                    <field value="${ret.put('TYPE',shotTypes)}"/>
+
+                    <foreach tag="k" end="${getArrayLen(shotTypesArr)}">
+                        <field tag="shotType" value="${shotTypesArr[k]}"/>
+
+
+                        <call tag="wret" type="sub" interfaceName="whitelist" transactionName="shot"
+                              scope="transaction">
+                            <argument value="${content}"/>
+                            <argument value="${shotType}"/>
+                            <argument value="${whitcfgid}"/>
+                        </call>
+
+                        <if condition="${!wret.content}">
+                            <if condition="${shotType=='COUNTRY'}">
+                                <field tag="detectmethod" value="EXACT"/>
+                                <field tag="olriskcountry"
+                                       etag="select listno from olriskcountry where highrisk = '1' and (code = ? or enlowertrim = ? or chname = ?)"
+                                       type="LST">
+                                    <argument value="${content}"/>
+                                    <argument value="${content.toLowerCase().replaceAll('\\s*', '')}"/>
+                                    <argument value="${content}"/>
+                                </field>
+                                <field tag="olriskcountrySize" value="${olriskcountry.size()}"/>
+                                <if condition="${olriskcountrySize>0}">
+
+                                    <foreach tag="i" end="${olriskcountrySize}">
+                                        <field tag="percent" value="100.0" type="double"/>
+                                        <field tag="shotdegree" value="100.0" type="double"/>
+                                        <field tag="black" value="${olriskcountry[i]['listno']}"/>
+                                        <field tag="shotWord" value="${isEmpty(original)?content:original}"/>
+
+                                        <field tag="dtdetectresult_inr" value="${dtdetectresult_inr_tmp.get(black)}"/>
+                                        <if condition="${null == dtdetectresult_inr}">
+                                            <field tag="dtdetectresult_inr"
+                                                   value="${__this.getCNTinr1('dtdetectresult')}"/>
+                                            <field value="${dtdetectresult_inr_tmp.put(black,dtdetectresult_inr)}"/>
+                                        </if>
+
+                                        <field tag="dtdetectresultdetail_inr"
+                                               value="${__this.getCNTinr1('dtdetectresultdetail')}"/>
+                                        <field etag="insert into dtdetectresultdetail(inr,resultid,domain,hitdata,hitrate,refhitrate,hitwords,detectmethod) values(?,?,?,?,ROUND(?,4),ROUND(?,4),?,?)">
+                                            <argument value="${dtdetectresultdetail_inr}"/>
+                                            <argument value="${dtdetectresult_inr}"/>
+                                            <argument value="${shotType}"/>
+                                            <argument value="${shotWord}"/>
+                                            <argument value="${shotdegree}"/>
+                                            <argument value="${percent}"/>
+                                            <argument value="[${content}]"/>
+                                            <argument value="${detectmethod}"/>
+                                        </field>
+
+                                        <field tag="shotdegree_max" value="${shotdegree_tmp.get(black)}"/>
+                                        <if condition="${null == shotdegree_max}">
+                                            <field value="${shotdegree_tmp.put(black,shotdegree)}"/>
+                                        </if>
+                                        <else>
+                                            <field value="${shotdegree>shotdegree_max?shotdegree_tmp.put(black,shotdegree):null}"/>
+                                        </else>
+                                    </foreach>
+                                </if>
+                            </if>
+                            <elseif condition="${shotType=='IDNUM'}">
+                                <field tag="detectmethod" value="EXACT"/>
+                                <field tag="blidnumdetail"
+                                       etag="select listno from blidnumdetail where idvaluelower = ?"
+                                       type="LST">
+                                    <argument value="${content.toLowerCase()}"/>
+                                </field>
+                                <field tag="olidnumdetail"
+                                       etag="select listno from olidnumdetail where idvaluelower = ?"
+                                       type="LST">
+                                    <argument value="${content.toLowerCase()}"/>
+                                </field>
+                                <field value="${blidnumdetail.addAll(olidnumdetail)}"/>
+                                <field tag="blidnumdetailSize" value="${blidnumdetail.size()}"/>
+                                <if condition="${blidnumdetailSize>0}">
+                                    <foreach tag="i" end="${blidnumdetailSize}">
+                                        <field tag="percent" value="100.0" type="double"/>
+                                        <field tag="shotdegree" value="100.0" type="double"/>
+                                        <field tag="black" value="${blidnumdetail[i]['listno']}"/>
+                                        <field tag="shotWord" value="${isEmpty(original)?content:original}"/>
+
+                                        <field tag="dtdetectresult_inr" value="${dtdetectresult_inr_tmp.get(black)}"/>
+                                        <if condition="${null == dtdetectresult_inr}">
+                                            <field tag="dtdetectresult_inr"
+                                                   value="${__this.getCNTinr1('dtdetectresult')}"/>
+                                            <field value="${dtdetectresult_inr_tmp.put(black,dtdetectresult_inr)}"/>
+                                        </if>
+                                        <field tag="dtdetectresultdetail_inr"
+                                               value="${__this.getCNTinr1('dtdetectresultdetail')}"/>
+                                        <field etag="insert into dtdetectresultdetail(inr,resultid,domain,hitdata,hitrate,refhitrate,hitwords,detectmethod) values(?,?,?,?,ROUND(?,4),ROUND(?,4),?,?)">
+                                            <argument value="${dtdetectresultdetail_inr}"/>
+                                            <argument value="${dtdetectresult_inr}"/>
+                                            <argument value="${shotType}"/>
+                                            <argument value="${shotWord}"/>
+                                            <argument value="${shotdegree}"/>
+                                            <argument value="${percent}"/>
+                                            <argument value="[${content}]"/>
+                                            <argument value="${detectmethod}"/>
+                                        </field>
+
+                                        <field tag="shotdegree_max" value="${shotdegree_tmp.get(black)}"/>
+                                        <if condition="${null == shotdegree_max}">
+                                            <field value="${shotdegree_tmp.put(black,shotdegree)}"/>
+                                        </if>
+                                        <else>
+                                            <field value="${shotdegree>shotdegree_max?shotdegree_tmp.put(black,shotdegree):CNnull}"/>
+                                        </else>
+                                    </foreach>
+                                </if>
+                            </elseif>
+                            <else>
+                                <field tag="dthitratiocfg" etag="select * from dthitratiocfg where inr = ?" type="LST">
+                                    <argument value="${hitcfgid}"/>
+                                </field>
+
+                                <if condition="${0 == dthitratiocfg.size()}">
+                                    <validator condition="${false}" description="检索库[${shotType}]命中率下限配置不存在"/>
+                                </if>
+                                <else>
+                                    <field tag="percentLimitName" value="${shotType}" codetable="shotType2LimitName"/>
+                                    <field tag="percent" value="${dthitratiocfg[0][percentLimitName]}" type="double"/>
+                                    <validator condition="${null != percent}" description="检索库[${shotType}]命中率下限配置不存在"/>
+                                </else>
+
+                                <field tag="blackListShot" value="${BlackListLucenceSearchLoader:getInstance()}"/>
+                                <field tag="results" type="arraylist"/>
+                                <if condition="${'1'==detecttype}">
+                                    <field tag="detectmethod" value="CONTAIN"/>
+                                    <field tag="results"
+                                           value="${blackListShot.shot(content,percent,shotType,detectmethod)}"/>
+                                </if>
+                                <if condition="${'2'==detecttype}">
+                                    <field tag="detectmethod" value="SIMILAR"/>
+                                    <field tag="results" value="${blackListShot.shot(content,percent,shotType)}"/>
+                                </if>
+                                <if condition="${'3'==detecttype}">
+                                    <if condition="${'NAME'==shotTypes}">
+                                        <field tag="detectmethod" value="SIMILAR"/>
+                                        <field tag="results" value="${blackListShot.shot(content,percent,shotType)}"/>
+                                    </if>
+                                    <else>
+                                        <field tag="detectmethod" value="CONTAIN"/>
+                                        <field tag="results"
+                                               value="${blackListShot.shot(content,percent,shotType,detectmethod)}"/>
+                                    </else>
+                                </if>
+
+                                <foreach tag="i" end="${results.size()}">
+                                    <field tag="val" value="${results[i].toString()}"/>
+                                    <field tag="valArray" value="${val.split('#',4)}"/>
+                                    <field tag="shotdegree" value="${valArray[0]}" type="double"/>
+                                    <field tag="black" value="${valArray[1]}"/>
+                                    <field tag="desstr" value="${valArray[2]}"/>
+                                    <field tag="shotWord" value="${valArray[3]}"/>
+
+                                    <field tag="dtdetectresult_inr" value="${dtdetectresult_inr_tmp.get(black)}"/>
+                                    <if condition="${null == dtdetectresult_inr}">
+                                        <field tag="dtdetectresult_inr" value="${__this.getCNTinr1('dtdetectresult')}"/>
+                                        <field value="${dtdetectresult_inr_tmp.put(black,dtdetectresult_inr)}"/>
+                                    </if>
+                                    <field tag="dtdetectresultdetail_inr"
+                                           value="${__this.getCNTinr1('dtdetectresultdetail')}"/>
+                                    <field etag="insert into dtdetectresultdetail(inr,resultid,domain,hitdata,hitrate,refhitrate,hitwords,detectmethod) values(?,?,?,?,ROUND(?,4),ROUND(?,4),?,?)">
+                                        <argument value="${dtdetectresultdetail_inr}"/>
+                                        <argument value="${dtdetectresult_inr}"/>
+                                        <argument value="${shotType}"/>
+                                        <argument value="${shotWord}"/>
+                                        <argument value="${shotdegree}"/>
+                                        <argument value="${percent}"/>
+                                        <argument value="${desstr}"/>
+                                        <argument value="${detectmethod}"/>
+                                    </field>
+
+                                    <field tag="shotdegree_max" value="${shotdegree_tmp.get(black)}"/>
+                                    <if condition="${null == shotdegree_max}">
+                                        <field value="${shotdegree_tmp.put(black,shotdegree)}"/>
+                                    </if>
+                                    <else>
+                                        <field value="${shotdegree>shotdegree_max?shotdegree_tmp.put(black,shotdegree):null}"/>
+                                    </else>
+                                </foreach>
+                            </else>
+                        </if>
+                    </foreach>
+
+                    <field tag="iter" value="${shotdegree_tmp.entrySet().iterator()}"/>
+                    <if condition="${iter.hasNext()}">
+                        <field value="${ret.put('RLEVEL','1')}"/>
+                    </if>
+                    <else>
+                        <field value="${ret.put('RLEVEL','0')}"/>
+                    </else>
+                    <while condition="${iter.hasNext()}">
+                        <field tag="m" value="${iter.next()}"/>
+                        <field tag="maxmatchrate" value="${m.getValue()}"/>
+                        <field tag="black" value="${m.getKey()}"/>
+                        <field etag="insert into dtdetectresult(inr,detectid,namelistid,maxmatchrate,msgid,msgdesc,datasource) values(?,?,?,ROUND(?,4),?,?,?)">
+                            <argument value="${dtdetectresult_inr_tmp[black]}"/>
+                            <argument value="${besref}"/>
+                            <argument value="${black}"/>
+                            <argument value="${maxmatchrate}"/>
+                            <argument value="${msgid}"/>
+                            <argument value="${desc}"/>
+                            <argument value="${black.substring(0,3)}"/>
+                        </field>
+
+                        <field tag="rpercent_max" value="${ret.get('RPERCENT')}"/>
+                        <if condition="${null == rpercent_max}">
+                            <field value="${ret.put('RPERCENT',maxmatchrate)}"/>
+                        </if>
+                        <else>
+                            <field value="${maxmatchrate>rpercent_max?ret.put('RPERCENT',maxmatchrate):null}"/>
+                        </else>
+                    </while>
+
+                    <field etag="commit"/>
+
+                    <field value="${ret}" scope="this"/>
+                </filter>
+
+            </step>
+        </transaction>
+
+    </interface>
+
+</root>
+
+	
+	

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.brilliance.com.cn/errorcode" targetNamespace="http://www.brilliance.com.cn/errorcode" elementFormDefault="qualified">
+	<xs:element name="errorCodes" type="errorCodesTyp"/>
+	<xs:complexType name="errorCodesTyp">
+		<xs:sequence>
+			<xs:element name="sysCode" type="sysCodeTyp" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="sysCodeTyp">
+		<xs:attribute name="id" type="nonEmptyTyp" use="required"/>
+		<xs:attribute name="ref" type="xs:string"/>
+	</xs:complexType>
+	<xs:simpleType name="nonEmptyTyp">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(\s*\S+\s*)+"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

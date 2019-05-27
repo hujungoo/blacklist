@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root xmlns="http://www.brilliance.com.cn/service" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.brilliance.com.cn/service schema/service.xsd">
+    <!-- 总服务配置文件，所有服务、定时任务都在此启动 -->
+    <services state="on" hotDeploy="on">
+        <service id="init" state="on" type="init">
+            <property name="interfaceName" value="outerserver"/>
+            <property name="transactionName" value="init"/>
+        </service>
+        
+        <service id="outerserver" state="on" type="shortSocket">
+            <property name="type" value="socket"/>
+            <property name="port" value="9998"/>
+            <property name="trust_ip" value="*"/>
+            <property name="thread_pool_size" value="25"/>
+            <property name="request_queue_len" value="500"/>
+            <property name="receive_timeout" value="0"/>
+            <property name="interfaceName" value="outerserver"/>
+            <property name="transactionName" value="parse"/>
+            <property name="has_head" value="true"/>
+            <property name="head_len_type" value="10"/>
+            <property name="head_len" value="8"/>
+            <property name="is_contain_head_len" value="false"/>
+            <property name="fill_len" value="0"/>
+            <property name="is_contain_fill_len" value="false"/>
+            <property name="body_offset" value="0"/>
+            <property name="encoding" value="utf-8"/>
+            <property name="receive_timeout" value="60000"/>
+        </service>
+
+        <service id="innerserver" state="on" type="shortSocket">
+            <property name="type" value="socket"/>
+            <property name="port" value="9999"/>
+            <property name="trust_ip" value="*"/>
+            <property name="thread_pool_size" value="25"/>
+            <property name="request_queue_len" value="500"/>
+            <property name="receive_timeout" value="0"/>
+            <property name="interfaceName" value="innerserver"/>
+            <property name="transactionName" value="parse"/>
+            <property name="has_head" value="true"/>
+            <property name="head_len_type" value="10"/>
+            <property name="head_len" value="8"/>
+            <property name="is_contain_head_len" value="false"/>
+            <property name="fill_len" value="0"/>
+            <property name="is_contain_fill_len" value="false"/>
+            <property name="body_offset" value="0"/>
+            <property name="encoding" value="utf-8"/>
+            <property name="receive_timeout" value="60000"/>
+        </service>
+    
+    </services>
+
+</root>

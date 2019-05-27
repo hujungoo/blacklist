@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<common xmlns="http://www.brilliance.com.cn/common" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.brilliance.com.cn/common schema/common.xsd">
+	<public>
+		<sys name="COMMONIMPORT" value="cfg/etc/imports.xml"/>
+		<sys name="ENCODING" value="UTF-8"/>
+	</public>
+
+	<functions ref="cfg/etc/functions.xml"/>
+	<codetables ref="cfg/etc/codetables.xml"/>
+	<modules ref="cfg/etc/modules.xml"/>
+
+	<!-- 连接 -->
+	<!-- 声明会使用到的connection -->
+	<connections>
+		<connection id="socketClientConnection" class="SocketClientConnection"/>
+		<!-- jdbcConnection数据库连接 -->
+
+		<connection id="jdbcconn" class="JdbcConnection" pooled="true">
+			<!-- pooled表示是否使用连接池 -->
+			<!-- com.ibm.db2.jcc.DB2Driver oracle.jdbc.driver.OracleDriver -->
+			<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+			<!-- jdbc驱动类路径 -->
+			<property name="url" value="jdbc:oracle:thin:@172.17.2.4:1521:ORCL"/>
+			<property name="username" value="bld"/>
+			<property name="password" value="bld"/>
+			<property name="use_table_cnt" value="true"/>
+			<!-- 连接池属性 -->
+			<poolSetting>
+				<property name="initialSize" value="5"/><!-- 初始化连接 -->
+				<property name="maxIdle" value="10"/><!-- 最大空闲连接 -->
+				<property name="minIdle" value="5"/><!-- 最小空闲连接 -->
+				<property name="maxActive" value="15"/><!-- 最大连接数量 -->
+				<property name="logAbandoned" value="false"/>
+				<!-- 标记当Statement或连接被泄露时是否打印程序的stack traces日志 -->
+				<property name="removeAbandoned" value="true"/>
+				<!-- removeAbandoned: 是否自动回收超时连接 -->
+				<property name="removeAbandonedTimeout" value="180"/>
+				<!-- removeAbandonedTimeout: 超时时间(以秒数为单位) -->
+				<property name="maxWait" value="3000"/>
+				<!-- maxWait: 超时等待时间以毫秒为单位 6000毫秒/1000等于60秒 -->
+				<property name="testWhileIdle" value="false"/>
+				<property name="testOnBorrow" value="true"/>
+				<property name="testOnReturn" value="false"/>
+				<property name="validationQuery" value="select 1 from dual"/>
+			</poolSetting>
+		</connection>
+
+	</connections>
+
+	<!-- 处理类 -->
+	<!-- 声明会使用到的filter -->
+	<filters>
+		<filter id="publicFilter" class="PublicFilter"/><!-- 数据处理类 -->
+		<filter id="xmlFilter" class="XmlFilter"/><!-- XML报文处理类 -->
+		<filter id="sqlFilter" class="SqlFilter"/>
+	</filters>
+</common>

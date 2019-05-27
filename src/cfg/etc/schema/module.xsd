@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.brilliance.com.cn/module" targetNamespace="http://www.brilliance.com.cn/module" elementFormDefault="qualified">
+	<xs:element name="modules">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="module" type="moduleTyp" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="moduleTyp">
+		<xs:sequence>
+			<xs:element name="field" type="field1ModuleTyp" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="id" type="nonEmptyTyp" use="required"/>
+		<xs:attribute name="type" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="iso8583"/>
+					<xs:enumeration value="fixed"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="field1ModuleTyp">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="subfield" type="moduleSubfieldTyp" />
+		</xs:choice>
+		<xs:attribute name="tag" type="nonEmptyTyp"/>
+		<xs:attribute name="etag" type="xs:integer" use="required"/>
+		<xs:attribute name="type" type="nonEmptyTyp" use="required"/>
+		<xs:attribute name="size" type="xs:integer"/>
+		<xs:attribute name="varsize" type="xs:integer"/>
+		<xs:attribute name="fill" type="xs:string" />
+		<xs:attribute name="direct" type="xs:string" />
+	</xs:complexType>
+	<xs:simpleType name="nonEmptyTyp">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(\s*\S+\s*)+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="moduleSubfieldTyp">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="subfield" type="moduleSubfieldTyp" />
+		</xs:choice>
+		<xs:attribute name="tag" type="nonEmptyTyp" />
+		<xs:attribute name="type" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="size" type="xs:integer" />
+		<xs:attribute name="varsize" type="xs:integer" />
+		<xs:attribute name="fill" type="xs:string" />
+		<xs:attribute name="direct" type="xs:string" />
+	</xs:complexType>
+</xs:schema>

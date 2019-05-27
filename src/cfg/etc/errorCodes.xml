@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<errorCodes xmlns="http://www.brilliance.com.cn/errorcode"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.brilliance.com.cn/errorcode schema/errorcode.xsd">
+	<!--接口平台内部错误代码 -->
+	<!-- id属性： 表示接口平台内部错误代码；ref属性：为对应系统的错误代码。进行关联 -->
+	<!-- "000"开头 - 配置错误 -->
+	<sysCode id="00000" ref="" />
+	<sysCode id="00001" ref="" />
+	<sysCode id="00002" ref="" />
+	<sysCode id="00003" ref="" />
+	<sysCode id="00004" ref="" />
+	<sysCode id="00005" ref="" />
+	<sysCode id="00006" ref="" />
+	<sysCode id="00007" ref="" />
+	<sysCode id="00008" ref="" />
+	<sysCode id="00009" ref="" />
+	<sysCode id="00010" ref="" />
+	<sysCode id="00011" ref="" />
+	<sysCode id="00012" ref="" />
+	<sysCode id="00013" ref="" />
+	<sysCode id="00014" ref="" />
+	<sysCode id="00015" ref="" />
+	<sysCode id="00016" ref="" />
+	<sysCode id="00017" ref="" />
+	<sysCode id="00018" ref="" />
+	<sysCode id="00019" ref="" />
+	<sysCode id="00020" ref="" />
+	<sysCode id="00021" ref="" />
+	<sysCode id="00022" ref="" />
+	<sysCode id="00023" ref="" />
+
+	<!-- "001"开头 - 表达式错误 -->
+	<sysCode id="00101" ref="" />
+	<sysCode id="00102" ref="" />
+	<sysCode id="00103" ref="" />
+	<sysCode id="00104" ref="" />
+	<sysCode id="00105" ref="" />
+
+	<!-- 002 上下文变量获取错误 -->
+	<sysCode id="00201" ref="" />
+	<sysCode id="00202" ref="" />
+
+	<!-- 003 公共流程connection错误 -->
+	<sysCode id="00301" ref="" />
+	<sysCode id="00302" ref="" />
+
+	<!-- 004 公共流程filter错误 -->
+	<sysCode id="00401" ref="" />
+	<sysCode id="00402" ref="" />
+	<sysCode id="00403" ref="" />
+	<sysCode id="00404" ref="" />
+	<sysCode id="00405" ref="" />
+	<sysCode id="00406" ref="" />
+	<sysCode id="00407" ref="" />
+	<sysCode id="00408" ref="" />
+	<sysCode id="00409" ref="" />
+	<sysCode id="00410" ref="" />
+	<sysCode id="00411" ref="" />
+	<sysCode id="00412" ref="" />
+	<sysCode id="00413" ref="" />
+	<sysCode id="00414" ref="" />
+	<sysCode id="00415" ref="" />
+	<sysCode id="00416" ref="" />
+	<sysCode id="00417" ref="" />
+	<sysCode id="00418" ref="" />
+	<sysCode id="00419" ref="" />
+	<sysCode id="00420" ref="" />
+	<sysCode id="00421" ref="" />
+	<sysCode id="00422" ref="" />
+	<sysCode id="00423" ref="" />
+	<sysCode id="00424" ref="" />
+	<sysCode id="00425" ref="" />
+	<sysCode id="00426" ref="" />
+	<sysCode id="00427" ref="" />
+	<sysCode id="00428" ref="" />
+	<sysCode id="00429" ref="" />
+
+	<!-- 005 AESFilter错误 -->
+	<sysCode id="00501" ref="" />
+	<sysCode id="00502" ref="" />
+	<sysCode id="00503" ref="" />
+
+	<!-- 006 BatchFilter -->
+	<sysCode id="00601" ref="" />
+	<sysCode id="00602" ref="" />
+
+	<!-- 007 BeanFilter -->
+	<sysCode id="00701" ref="" />
+	<sysCode id="00702" ref="" />
+	<sysCode id="00703" ref="" />
+	<sysCode id="00704" ref="" />
+	<sysCode id="00705" ref="" />
+	<sysCode id="00706" ref="" />
+
+	<!-- 008 FileConnection -->
+	<sysCode id="00801" ref="" />
+	<sysCode id="00802" ref="" />
+	<sysCode id="00803" ref="" />
+
+	<!-- 009 FileFilter -->
+	<sysCode id="00901" ref="" />
+
+	<!-- 010 FixedFilter -->
+	<sysCode id="01001" ref="" />
+	<sysCode id="01002" ref="" />
+	<sysCode id="01003" ref="" />
+	<sysCode id="01004" ref="" />
+	<sysCode id="01005" ref="" />
+
+	<!-- 011 FML32Filter -->
+	<sysCode id="01101" ref="" />
+	<sysCode id="01102" ref="" />
+
+	<!-- 012 FTPConnection -->
+	<sysCode id="01201" ref="" />
+	<sysCode id="01202" ref="" />
+	<sysCode id="01203" ref="" />
+	<sysCode id="01204" ref="" />
+	<sysCode id="01205" ref="" />
+	<sysCode id="01206" ref="" />
+
+	<!-- 013 GsonFilter -->
+	<sysCode id="01301" ref="" />
+
+	<!-- 014 HttpConnection -->
+	<sysCode id="01401" ref="" />
+	<sysCode id="01402" ref="" />
+
+	<!-- 015 JdbcConnection -->
+	<sysCode id="01501" ref="test.2" />
+	<sysCode id="01502" ref="" />
+	<sysCode id="01503" ref="" />
+
+	<!-- 016 LdapConnection -->
+	<sysCode id="01601" ref="" />
+	<sysCode id="01602" ref="" />
+	<sysCode id="01603" ref="" />
+
+	<!-- 017 MQConnection -->
+	<sysCode id="01701" ref="" />
+
+	<!-- 018 MQFilter -->
+	<sysCode id="01801" ref="" />
+	<sysCode id="01802" ref="" />
+	<sysCode id="01803" ref="" />
+	<sysCode id="01804" ref="" />
+	<sysCode id="01805" ref="" />
+	<sysCode id="01806" ref="" />
+	<sysCode id="01807" ref="" />
+
+	<!-- 019 ResultSetFilter -->
+	<sysCode id="01901" ref="" />
+	<sysCode id="01902" ref="" />
+	<sysCode id="01903" ref="" />
+
+	<!-- 020 SoapConnection -->
+	<sysCode id="02001" ref="" />
+	<sysCode id="02002" ref="" />
+	<sysCode id="02003" ref="" />
+	<sysCode id="02004" ref="" />
+
+	<!-- 021 SocketClientConnection -->
+	<sysCode id="02101" ref="" />
+	<sysCode id="02102" ref="" />
+
+	<!-- 022 SocketFilter -->
+	<sysCode id="02201" ref="" />
+	<sysCode id="02202" ref="" />
+	<sysCode id="02203" ref="" />
+	<sysCode id="02204" ref="" />
+
+	<!-- 023 SocketServerConnection -->
+	<sysCode id="02301" ref="" />
+	<sysCode id="02302" ref="" />
+	<sysCode id="02303" ref="" />
+
+	<!-- 024 SplitFilter -->
+	<sysCode id="02401" ref="" />
+
+	<!-- 025 SqlFilter -->
+	<sysCode id="02501" ref="" />
+	<sysCode id="02502" ref="" />
+	<sysCode id="02503" ref="" />
+	<sysCode id="02504" ref="" />
+
+	<!-- 026 TuxedoClientConnection -->
+	<sysCode id="02601" ref="" />
+	<sysCode id="02602" ref="" />
+	<sysCode id="02603" ref="" />
+
+	<!-- 027 WSServerConnection -->
+	<sysCode id="02701" ref="" />
+
+	<!-- 028 XmlFilter -->
+	<sysCode id="02801" ref="" />
+	<sysCode id="02802" ref="" />
+	<sysCode id="02803" ref="" />
+
+	<!-- 030 序列化 -->
+	<sysCode id="02901" ref="" />
+	<sysCode id="02902" ref="" />
+	<sysCode id="02903" ref="" />
+	<sysCode id="02904" ref="" />
+	<sysCode id="02905" ref="" />
+
+	<!-- sftp -->
+	<sysCode id="03301" ref="" />
+	<sysCode id="03302" ref="" />
+	<sysCode id="03303" ref="" />
+	<sysCode id="03304" ref="" />
+	<sysCode id="03305" ref="" />
+	<sysCode id="03306" ref="" />
+	<sysCode id="03307" ref="" />
+	<sysCode id="03308" ref="" />
+	<sysCode id="03309" ref="" />
+	
+	<!-- exceltemplate -->
+	<sysCode id="03401" ref="" />
+	<sysCode id="03402" ref="" />
+	<sysCode id="03403" ref="" />
+	<sysCode id="03404" ref="" />
+
+
+</errorCodes>

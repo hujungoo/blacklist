@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.brilliance.com.cn/service"
+           targetNamespace="http://www.brilliance.com.cn/service"
+           elementFormDefault="qualified">
+    <xs:element name="root">
+        <xs:complexType>
+            <xs:all>
+                <xs:element name="services" type="servicesTyp"
+                            minOccurs="0"/>
+                <xs:element name="tasks" type="tasksTyp"
+                            minOccurs="0"/>
+            </xs:all>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="tasksTyp">
+        <xs:sequence>
+            <xs:element name="task" type="taskTyp" minOccurs="0"
+                        maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="state" type="stateTyp"/>
+    </xs:complexType>
+    <xs:complexType name="taskTyp">
+        <xs:sequence>
+            <xs:element name="property" type="propertyTyp"
+                        minOccurs="3" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attributeGroup ref="baseServiceAndTaskAttr"/>
+    </xs:complexType>
+    <xs:complexType name="servicesTyp">
+        <xs:sequence>
+            <xs:element name="service" type="serviceTyp"
+                        minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="state" type="stateTyp"/>
+        <xs:attribute name="hotDeploy" type="stateTyp"/>
+    </xs:complexType>
+    <xs:simpleType name="stateTyp">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="on"/>
+            <xs:enumeration value="off"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:attributeGroup name="baseServiceAndTaskAttr">
+        <xs:attribute name="id" type="nonEmptyTyp" use="required"/>
+        <xs:attribute name="state" type="stateTyp"/>
+        <xs:attribute name="description" type="xs:string"/>
+        <xs:attribute name="depencency" type="xs:string"/>
+        <xs:attribute name="date" type="xs:string"/>
+        <xs:attribute name="continueExcute" type="xs:string"/>
+        <xs:attribute name="otherprocess" type="xs:string"/>
+    </xs:attributeGroup>
+    <xs:complexType name="serviceTyp">
+        <xs:sequence>
+            <xs:element name="property" type="propertyTyp"
+                        minOccurs="2" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attributeGroup ref="baseServiceAndTaskAttr"/>
+        <xs:attribute name="expression" type="xs:string"/>
+        <xs:attribute name="type" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+
+                    <xs:enumeration value="socket"/>
+                    <xs:enumeration value="webservice"/>
+                    <xs:enumeration value="http"/>
+                    <xs:enumeration value="init"/>
+                    <xs:enumeration value="link"/>
+                    <xs:enumeration value="channel"/>
+                    <xs:enumeration value="terminal"/>
+                    <xs:enumeration value="snmp"/>
+                    <xs:enumeration value="shortSocket"/>
+
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:simpleType name="nonEmptyTyp">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="(\s*\S+\s*)+"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="propertyTyp">
+        <xs:sequence>
+            <xs:element name="argument" type="argumentTyp" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="nonEmptyTyp" use="required"/>
+        <xs:attribute name="value" type="xs:string"/>
+    </xs:complexType>
+    <xs:simpleType name="directionTyp">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="in"/>
+            <xs:enumeration value="out"/>
+            <xs:enumeration value="inout"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:attributeGroup name="baseAttr">
+        <xs:attribute name="tag" type="nonEmptyTyp"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:attributeGroup>
+    <xs:complexType name="argumentTyp">
+        <xs:attributeGroup ref="baseAttr"/>
+        <xs:attribute name="type" type="nonEmptyTyp"/>
+        <xs:attribute name="direction" type="directionTyp"/>
+        <xs:attribute name="description" type="xs:string"/>
+        <xs:attribute name="id" type="xs:string"/>
+    </xs:complexType>
+</xs:schema>

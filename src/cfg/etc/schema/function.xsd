@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.brilliance.com.cn/function"
+    targetNamespace="http://www.brilliance.com.cn/function"
+    elementFormDefault="qualified">
+    <xs:element name="functions">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="function" type="functionTyp" />
+                <xs:element name="reflect" type="reflectTyp" />
+                <xs:element name="func" type="funcTyp" />
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:complexType name="functionTyp">
+        <xs:sequence>
+            <xs:element name="input" type="inputTyp"
+                minOccurs="0" maxOccurs="unbounded" />
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:sequence>
+                    <xs:element name="if" type="if1FuncTyp" />
+                    <xs:element name="elseif" type="elseif1FuncTyp"
+                        minOccurs="0" maxOccurs="unbounded" />
+                    <xs:element name="else" type="logic1FuncTyp"
+                        minOccurs="0" maxOccurs="1" />
+                </xs:sequence>
+                <xs:element name="while" type="while1FuncTyp" />
+                <xs:element name="foreach" type="foreach1FuncTyp" />
+                <xs:element name="field" type="field1FuncTyp" />
+                <xs:element name="return" type="returnTyp" />
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name="name" type="nonEmptyTyp" use="required" />
+    </xs:complexType>
+    <xs:complexType name="logic1FuncTyp">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:sequence>
+                <xs:element name="if" type="if1FuncTyp" />
+                <xs:element name="elseif" type="elseif1FuncTyp"
+                    minOccurs="0" maxOccurs="unbounded" />
+                <xs:element name="else" type="logic1FuncTyp"
+                    minOccurs="0" maxOccurs="1" />
+            </xs:sequence>
+            <xs:element name="while" type="while1FuncTyp" />
+            <xs:element name="foreach" type="foreach1FuncTyp" />
+            <xs:element name="field" type="field1FuncTyp" />
+            <xs:element name="return" type="returnTyp" />
+        </xs:choice>
+    </xs:complexType>
+    <xs:complexType name="if1FuncTyp">
+        <xs:complexContent>
+            <xs:extension base="logic1FuncTyp">
+                <xs:attribute name="condition" type="nonEmptyTyp"
+                    use="required" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="elseif1FuncTyp">
+        <xs:complexContent>
+            <xs:extension base="logic1FuncTyp">
+                <xs:attribute name="condition" type="nonEmptyTyp"
+                    use="required" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="while1FuncTyp">
+        <xs:complexContent>
+            <xs:extension base="logic1FuncTyp">
+                <xs:attribute name="condition" type="nonEmptyTyp"
+                    use="required" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="foreach1FuncTyp">
+        <xs:complexContent>
+            <xs:extension base="logic1FuncTyp">
+                <xs:attribute name="tag" type="nonEmptyTyp"
+                    use="required" />
+                <xs:attribute name="begin" type="xs:string" />
+                <xs:attribute name="step" type="xs:string" />
+                <xs:attribute name="end" type="nonEmptyTyp"
+                    use="required" />
+                <xs:attribute name="condition" type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="argumentTyp">
+        <xs:attribute name="id" type="nonEmptyTyp" />
+        <xs:attribute name="value" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="field1FuncTyp">
+        <xs:sequence>
+            <xs:element name="argument" type="argumentTyp"
+                minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="tag" type="nonEmptyTyp" />
+        <xs:attribute name="value" type="xs:string" use="required" />
+        <xs:attribute name="type" type="nonEmptyTyp" />
+        <xs:attribute name="size" type="xs:string" />
+        <xs:attribute name="fill">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="(left|right),[\s\S]" />
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="inputTyp">
+        <xs:attribute name="tag" type="nonEmptyTyp" use="required" />
+        <xs:attribute name="type" type="nonEmptyTyp" />
+    </xs:complexType>
+    <xs:complexType name="returnTyp">
+        <xs:attribute name="value" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="reflectTyp">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="constructor" type="constructorTyp" />
+            <xs:element name="field" type="fieldAndMethodTyp" />
+            <xs:element name="method" type="fieldAndMethodTyp" />
+        </xs:choice>
+        <xs:attribute name="class" type="nonEmptyTyp" use="required" />
+        <xs:attribute name="static" type="xs:boolean" />
+    </xs:complexType>
+     <xs:complexType name="funcTyp">
+        <xs:attribute name="class" type="nonEmptyTyp" use="required" />
+        <xs:attribute name="namespace" type="nonEmptyTyp" use="required" />
+        <xs:attribute name="static" type="xs:boolean"  use="required" />
+    </xs:complexType>
+    <xs:complexType name="constructorTyp">
+        <xs:attribute name="alias" type="nonEmptyTyp" />
+        <xs:attribute name="type" type="xs:string" />
+        <xs:attribute name="error" type="xs:string" />
+    </xs:complexType>
+    <xs:complexType name="fieldAndMethodTyp">
+        <xs:complexContent>
+            <xs:extension base="constructorTyp">
+                <xs:attribute name="name" type="nonEmptyTyp"
+                    use="required" />
+                <xs:attribute name="static" type="xs:boolean" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:simpleType name="nonEmptyTyp">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[^\s]+" />
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

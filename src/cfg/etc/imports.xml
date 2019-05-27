@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<imports xmlns="http://www.brilliance.com.cn/import" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.brilliance.com.cn/import schema/import.xsd">
+    <!-- import文件为一类文件可以存在多个，其中包含多个多个import节点 import节点中的内容不局限于某一种 -->
+    <import id="SWTHeader">
+        <field tag="content" value="${this[0]}"/>
+        <field tag="besref" value="${this[1]}"/>
+        <field tag="hitcfgid" value="${this[2]}"/>
+        <field tag="whitcfgid" value="${this[3]}"/>
+
+        <field tag="results" type="arraylist"/>
+        <field tag="swiftfields" value="${MTUnPackMessage:getFieldsForMsgV2(content)}"/>
+    </import>
+    <!--可能不存在第一行，第二行是bic，56位是国家-->
+    <import id="maybeSecondLine56Country">
+        <field tag="field" value="${swiftfields.get(msgid)}"/>
+        <if condition="${null != field}">
+            <foreach tag="i" end="${field.size()}">
+                <field tag="fieldOne" value="${field[i]}"/>
+                <field tag="fieldOneDetail" value="${fieldOne.split('\n')}"/>
+                <if condition="${getArrayLen(fieldOneDetail)==1}">
+                    <field tag="target" value="${fieldOneDetail[0]}"/>
+                </if>
+                <else>
+                    <field tag="target" value="${fieldOneDetail[1]}"/>
+                </else>
+                <call tag="ret" type="sub" interfaceName="blacklist" transactionName="shot"
+                      scope="transaction">
+                    <argument value="${target.substring(4,6)}"/>
+                    <argument value="COUNTRY"/>
+                    <argument value="${msgid}"/>
+                    <argument value="${desc}"/>
+                    <argument value="${besref}"/>
+                    <argument value="3"/>
+                    <argument value="${hitcfgid}"/>
+                    <argument value="${whitcfgid}"/>
+                    <argument value="${target}"/>
+                </call>
+                <field tag="result" value="${ret.content}"/>
+                <if condition="${1==result['RLEVEL']}">
+                    <field value="${results.add(result)}"/>
+                </if>
+            </foreach>
+        </if>
+    </import>
+
+    <!--可能不存在第一行，第二行是地址-->
+    <import id="maybeSecondLineAddress">
+        <field tag="field" value="${swiftfields.get(msgid)}"/>
+        <if condition="${null != field}">
+            <foreach tag="i" end="${field.size()}">
+                <field tag="fieldOne" value="${field[i]}"/>
+                <field tag="fieldOneDetail" value="${fieldOne.split('\n')}"/>
+                <if condition="${getArrayLen(fieldOneDetail)==1}">
+                    <field tag="target" value="${fieldOneDetail[0]}"/>
+                </if>
+                <else>
+                    <field tag="target" value="${fieldOneDetail[1]}"/>
+                </else>
+                <call tag="ret" type="sub" interfaceName="blacklist" transactionName="shot"
+                      scope="transaction">
+                    <argument value="${target}"/>
+                    <argument value="ADDRESS"/>
+                    <argument value="${msgid}"/>
+                    <argument value="${desc}"/>
+                    <argument value="${besref}"/>
+                    <argument value="3"/>
+                    <argument value="${hitcfgid}"/>
+                    <argument value="${whitcfgid}"/>
+                </call>
+                <field tag="result" value="${ret.content}"/>
+                <if condition="${1==result['RLEVEL']}">
+                    <field value="${results.add(result)}"/>
+                </if>
+            </foreach>
+        </if>
+    </import>
+
+    <!--可能不存在第一行，其他都是名称地址-->
+    <import id="maybeExceptFirstLineNameAndAddress">
+        <field tag="field" value="${swiftfields.get(msgid)}"/>
+        <if condition="${null != field}">
+            <foreach tag="i" end="${field.size()}">
+                <field tag="fieldOne" value="${field[i]}"/>
+                <field tag="fieldOneDetail" value="${fieldOne.split('\n')}"/>
+                <if condition="${fieldOneDetail[0].startsWith('/')}">
+                    <field tag="target" value="${fieldOne.substring(fieldOneDetail[0].length()+1)}"/>
+                </if>
+                <else>
+                    <field tag="target" value="${fieldOne}"/>
+                </else>
+                <call tag="ret" type="sub" interfaceName="blacklist" transactionName="shot"
+                      scope="transaction">
+                    <argument value="${target}"/>
+                    <argument value="NAME,ADDRESS"/>
+                    <argument value="${msgid}"/>
+                    <argument value="${desc}"/>
+                    <argument value="${besref}"/>
+                    <argument value="3"/>
+                    <argument value="${hitcfgid}"/>
+                    <argument value="${whitcfgid}"/>
+                </call>
+                <field tag="result" value="${ret.content}"/>
+                <if condition="${1==result['RLEVEL']}">
+                    <field value="${results.add(result)}"/>
+                </if>
+            </foreach>
+        </if>
+    </import>
+
+    <!--除了第一行都是名称地址-->
+    <import id="exceptFirstLineNameAndAddress">
+        <field tag="field" value="${swiftfields.get(msgid)}"/>
+        <if condition="${null != field}">
+            <foreach tag="i" end="${field.size()}">
+                <field tag="fieldOne" value="${field[i]}"/>
+                <field tag="fieldOneDetail" value="${fieldOne.split('\n')}"/>
+                <field tag="target" value="${fieldOne.substring(fieldOneDetail[0].length()+1)}"/>
+                <call tag="ret" type="sub" interfaceName="blacklist" transactionName="shot"
+                      scope="transaction">
+                    <argument value="${target}"/>
+                    <argument value="NAME,ADDRESS"/>
+                    <argument value="${msgid}"/>
+                    <argument value="${desc}"/>
+                    <argument value="${besref}"/>
+                    <argument value="3"/>
+                    <argument value="${hitcfgid}"/>
+                    <argument value="${whitcfgid}"/>
+                </call>
+                <field tag="result" value="${ret.content}"/>
+                <if condition="${1==result['RLEVEL']}">
+                    <field value="${results.add(result)}"/>
+                </if>
+            </foreach>
+        </if>
+    </import>
+</imports>

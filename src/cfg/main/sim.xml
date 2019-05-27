@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xmlns="http://www.brilliance.com.cn/interface" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.brilliance.com.cn/interface ../etc/schema/interface.xsd">
+
+    <interface id="sim" type="client" version="2.0"
+               defaultScope="transaction">
+
+        <transaction id="sim" version="2.0">
+            <step id="1">
+                <filter ref="publicFilter" type="in">
+                    <field tag="data" value="${this[0]}"/>
+                    <field tag="type" value="${this[1]}"/>
+                    <field tag="strat" value="${this[2]}"/>
+                    <field tag="encoding" value="#{ENCODING}"/>
+                </filter>
+                <filter ref="xmlFilter" type="out" encoding="#{ENCODING}">
+                    <field etag="BES@COUNT" value="${data.size()}"/>
+                    <field etag="BES.ICODE" value="1001"/>
+                    <field etag="BES.OWN" value="WEB"/>
+                    <field etag="BES.ORGID" value="0000"/>
+                    <field etag="BES.USERID" value="admin"/>
+                    <field etag="BES.OWNTASKDESC" value="测试"/>
+                    <field etag="BES.STRAT" value="${strat}"/>
+                    <field etag="BES.OWNREF" value="${formatNow('yyMMddHHmmssSSS')}"/>
+                    <foreach tag="i" end="${data.size()}">
+                        <field etag="BES.MSGS.MSG(${i}).MSGID" value="${i+1}"/>
+                        <field etag="BES.MSGS.MSG(${i}).DESC" value="测试${i}"/>
+                        <field etag="BES.MSGS.MSG(${i}).TYPE" value="${type}"/>
+                        <field etag="BES.MSGS.MSG(${i}).VALUE" value="${data[i]}"/>
+                        <!-- <field etag="BES.MSGS.MSG(${i}).ADDRESS" value="USA Metropolis"/>
+                         <field etag="BES.MSGS.MSG(${i}).COUNTRY" value="Central African Republic"/>
+                         <field etag="BES.MSGS.MSG(${i}).IDNUM" value="025431159"/>-->
+                    </foreach>
+                </filter>
+                <connection ref="socketClient" encoding="#{ENCODING}"/>
+
+                <filter ref="xmlFilter" type="in" via="${bytes2Str(this, encoding)}" encoding="#{ENCODING}">
+                    <field tag="count" etag="BES@COUNT"/>
+                    <field tag="ret" type="map"/>
+                    <field value="${ret.put('value',null)}"/>
+                    <if condition="${!isEmpty(count)}">
+                        <foreach tag="i" end="${count}">
+                            <field tag="value[${i}]" etag="BES.MSGS.MSG(${i}).VALUE"/>
+                            <field tag="type[${i}]" etag="BES.MSGS.MSG(${i}).TYPE"/>
+                            <field tag="rlevel[${i}]" etag="BES.MSGS.MSG(${i}).RLEVEL"/>
+                            <field tag="rpercent[${i}]" etag="BES.MSGS.MSG(${i}).RPERCENT"/>
+                        </foreach>
+                        <field value="${ret.put('value',value)}"/>
+                        <field value="${ret.put('type',type)}"/>
+                        <field value="${ret.put('rlevel',rlevel)}"/>
+                        <field value="${ret.put('rpercent',rpercent)}"/>
+                    </if>
+
+
+                    <field value="${ret}" scope="this"/>
+                </filter>
+            </step>
+        </transaction>
+
+        <transaction id="swift" version="2.0">
+            <step id="1">
+                <filter ref="publicFilter" type="in">
+                    <field tag="data" value="${this[0]}"/>
+                    <field tag="encoding" value="#{ENCODING}"/>
+                </filter>
+                <filter ref="xmlFilter" type="out" encoding="#{ENCODING}">
+                    <field etag="BES.ICODE" value="1002"/>
+                    <field etag="BES.OWN" value="WEB"/>
+                    <field etag="BES.ORGID" value="0000"/>
+                    <field etag="BES.USERID" value="admin"/>
+                    <field etag="BES.OWNTASKDESC" value="测试"/>
+                    <field etag="BES.OWNREF" value="${formatNow('yyMMddHHmmssSSS')}"/>
+                    <field etag="BES.MSGS.MSG@MSGTYPE" value="103"/>
+                    <field etag="BES.MSGS.MSG.VALUE" value="${data}"/>
+                </filter>
+                <connection ref="socketClient" encoding="#{ENCODING}"/>
+                <!--<filter ref="publicFilter" type="in">
+                    <log value=" ${bytes2Str(this, encoding)}"/>
+                </filter>-->
+
+                <filter ref="xmlFilter" type="in" via="${bytes2Str(this, encoding)}" encoding="#{ENCODING}">
+                    <field tag="count" etag="BES@COUNT"/>
+                    <field tag="ret" type="map"/>
+                    <if condition="${ null !=count}">
+                        <foreach tag="i" end="${count}">
+                            <field tag="msgid[${i}]" etag="BES.MSGS.MSG(${i}).MSGID"/>
+                            <field tag="svalue[${i}]" etag="BES.MSGS.MSG(${i}).SVALUE"/>
+                            <field tag="rlevel[${i}]" etag="BES.MSGS.MSG(${i}).RLEVEL"/>
+                            <field tag="rpercent[${i}]" etag="BES.MSGS.MSG(${i}).RPERCENT"/>
+                        </foreach>
+                        <field value="${ret.put('count',count)}"/>
+                        <if condition="${count>0}">
+                            <field value="${ret.put('msgid',msgid)}"/>
+                            <field value="${ret.put('svalue',svalue)}"/>
+                            <field value="${ret.put('rlevel',rlevel)}"/>
+                            <field value="${ret.put('rpercent',rpercent)}"/>
+                        </if>
+                    </if>
+                    <field value="${ret}" scope="this"/>
+                </filter>
+            </step>
+        </transaction>
+
+        <transaction id="json" version="2.0">
+            <step id="1">
+                <filter ref="publicFilter" type="in">
+                    <field tag="path" value="${this[0]}"/>
+                    <field tag="encoding" value="#{ENCODING}"/>
+                    <field tag="params" type="map"/>
+                    <field value="${params.put('interface','001')}"/>
+                    <field value="${params.put('transaction','load')}"/>
+                    <field value="${params.put('indexDir',path)}"/>
+                    <field value="${toJson(params)}" scope="this"/>
+                </filter>
+                <connection ref="socketClient" encoding="#{ENCODING}"/>
+                <filter ref="publicFilter" type="in">
+                    <field tag="content" value="${bytes2Str(this, encoding)}"/>
+                    <field tag="ret" value="${fromJson(content,'map')}"/>
+                    <field tag="retcode" value="${ret['retcode']}"/>
+                    <log value="retcode:${retcode},retmsg:${retcode=='0'?ret['retmsg']:''}"/>
+                </filter>
+
+            </step>
+        </transaction>
+
+    </interface>
+
+    <connections>
+        <connection id="socketClient" class="ShortSocketClientConnection">
+            <property name="port" value="9998"/>
+            <property name="ip" value="172.17.2.4"/><!--172.17.2.4-->
+            <property name="has_head" value="true"/>
+            <property name="head_len_type" value="10"/>
+            <property name="head_len" value="8"/>
+            <property name="is_contain_head_l6en" value="false"/>
+            <property name="fill_len" value="0"/>
+            <property name="is_contain_fill_len" value="false"/>
+        </connection>
+
+        <connection id="fileConnection" class="FileConnection"/>
+    </connections>
+</root>
+
+	
+

@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.brilliance.com.cn/interface"
+	targetNamespace="http://www.brilliance.com.cn/interface"
+	elementFormDefault="qualified">
+	<xs:element name="root">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="public" type="publicTyp" minOccurs="0" />
+				<xs:element name="interface" type="interfaceTyp"
+					minOccurs="0" />
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="codetables" type="codetablesTyp"
+						minOccurs="0" />
+					<xs:element name="modules" type="modulesTyp" minOccurs="0" />
+					<xs:element name="functions" type="functionsTyp"
+						minOccurs="0" />
+				</xs:choice>
+				<xs:element name="connections" type="connectionsTyp"
+					minOccurs="0" />
+				<xs:element name="filters" type="filtersTyp" minOccurs="0" />
+				<xs:element name="errorCodes" type="errorCodesTyp"
+					minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="errorCodesTyp">
+		<xs:sequence>
+			<xs:element name="sysCode" type="sysCodeTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="sysCodeTyp">
+		<xs:attribute name="id" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="ref" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="functionsTyp">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="function" type="functionTyp" />
+			<xs:element name="reflect" type="reflectTyp" />
+			<xs:element name="func" type="funcTyp" />
+		</xs:choice>
+		<xs:attribute name="id" type="xs:string" />
+		<xs:attribute name="ref" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="functionTyp">
+		<xs:sequence>
+			<xs:element name="input" type="inputTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:sequence>
+					<xs:element name="if" type="if1FuncTyp" />
+					<xs:element name="elseif" type="elseif1FuncTyp"
+						minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="else" type="logic1FuncTyp" minOccurs="0"
+						maxOccurs="1" />
+				</xs:sequence>
+				<xs:element name="while" type="while1FuncTyp" />
+				<xs:element name="foreach" type="foreach1FuncTyp" />
+				<xs:element name="field" type="field1FuncTyp" />
+				<xs:element name="return" type="returnTyp" />
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="name" type="nonEmptyTyp" use="required" />
+	</xs:complexType>
+	<xs:complexType name="logic1FuncTyp">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:sequence>
+				<xs:element name="if" type="if1FuncTyp" />
+				<xs:element name="elseif" type="elseif1FuncTyp"
+					minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="else" type="logic1FuncTyp" minOccurs="0"
+					maxOccurs="1" />
+			</xs:sequence>
+			<xs:element name="while" type="while1FuncTyp" />
+			<xs:element name="foreach" type="foreach1FuncTyp" />
+			<xs:element name="field" type="field1FuncTyp" />
+			<xs:element name="return" type="returnTyp" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="if1FuncTyp">
+		<xs:complexContent>
+			<xs:extension base="logic1FuncTyp">
+				<xs:attribute name="condition" type="nonEmptyTyp" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="elseif1FuncTyp">
+		<xs:complexContent>
+			<xs:extension base="logic1FuncTyp">
+				<xs:attribute name="condition" type="nonEmptyTyp" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="while1FuncTyp">
+		<xs:complexContent>
+			<xs:extension base="logic1FuncTyp">
+				<xs:attribute name="condition" type="nonEmptyTyp" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="foreach1FuncTyp">
+		<xs:complexContent>
+			<xs:extension base="logic1FuncTyp">
+				<xs:attribute name="tag" type="nonEmptyTyp" use="required" />
+				<xs:attribute name="begin" type="xs:string" />
+				<xs:attribute name="step" type="xs:string" />
+				<xs:attribute name="end" type="nonEmptyTyp" use="required" />
+				<xs:attribute name="condition" type="xs:string" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="field1FuncTyp">
+		<xs:sequence>
+			<xs:element name="argument" type="argumentTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="tag" type="nonEmptyTyp" />
+		<xs:attribute name="value" type="xs:string" use="required" />
+		<xs:attribute name="type" type="nonEmptyTyp" />
+		<xs:attribute name="size" type="xs:string" />
+		<xs:attribute name="fill">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:pattern value="(left|right),[\s\S]" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="inputTyp">
+		<xs:attribute name="tag" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="type" type="nonEmptyTyp" />
+	</xs:complexType>
+	<xs:complexType name="returnTyp">
+		<xs:attribute name="value" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="reflectTyp">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="constructor" type="constructorTyp" />
+			<xs:element name="field" type="fieldAndMethodTyp" />
+			<xs:element name="method" type="fieldAndMethodTyp" />
+		</xs:choice>
+		<xs:attribute name="class" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="static" type="xs:boolean" />
+	</xs:complexType>
+	<xs:complexType name="constructorTyp">
+		<xs:attribute name="alias" type="nonEmptyTyp" />
+		<xs:attribute name="type" type="xs:string" />
+		<xs:attribute name="error" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="fieldAndMethodTyp">
+		<xs:complexContent>
+			<xs:extension base="constructorTyp">
+				<xs:attribute name="name" type="nonEmptyTyp" use="required" />
+				<xs:attribute name="static" type="xs:boolean" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="moduleTyp">
+		<xs:sequence>
+			<xs:element name="field" type="field1ModuleTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="type" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="iso8583" />
+					<xs:enumeration value="fixed" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="field1ModuleTyp">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="subfield" type="moduleSubfieldTyp" />
+		</xs:choice>
+		<xs:attribute name="tag" type="nonEmptyTyp" />
+		<xs:attribute name="etag" type="xs:integer" use="required" />
+		<xs:attribute name="type" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="size" type="xs:integer" />
+		<xs:attribute name="varsize" type="xs:integer" />
+		<xs:attribute name="fill" type="xs:string" />
+		<xs:attribute name="direct" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="modulesTyp">
+		<xs:sequence>
+			<xs:element name="module" type="moduleTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" />
+		<xs:attribute name="ref" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="codetablesTyp">
+		<xs:choice>
+			<xs:element name="codetable" type="codetableTyp"
+				minOccurs="0" maxOccurs="unbounded">
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="id" type="xs:string" />
+		<xs:attribute name="sql" type="xs:string" />
+		<xs:attribute name="ref" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="codetableTyp">
+		<xs:sequence>
+			<xs:element name="code" type="codeTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="nonEmptyTyp" use="required" />
+	</xs:complexType>
+	<xs:complexType name="codeTyp">
+		<xs:attribute name="id" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="value" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="publicTyp">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="sys" type="propertyTyp" />
+			<xs:element name="extsys" type="extsysTyp" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="extsysTyp">
+		<xs:sequence>
+			<xs:element name="sys" type="propertyTyp" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="ref" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="type">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="properties" />
+					<xs:enumeration value="xml" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="connectionsTyp">
+		<xs:sequence>
+			<xs:element name="connection" type="Connection1CommTyp"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Connection1CommTyp">
+		<xs:sequence>
+			<xs:element name="property" type="propertyTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+			<xs:element name="poolSetting" type="poolSettingTyp"
+				minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="id" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="class" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="pooled" type="xs:boolean" />
+	</xs:complexType>
+	<xs:complexType name="poolSettingTyp">
+		<xs:sequence>
+			<xs:element name="property" type="propertyTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="filtersTyp">
+		<xs:sequence>
+			<xs:element name="filter" type="filter1CommTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="filter1CommTyp">
+		<xs:sequence>
+			<xs:element name="parameter" type="parameterTyp"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="class" type="nonEmptyTyp" use="required" />
+	</xs:complexType>
+	<xs:complexType name="parameterTyp">
+		<xs:attribute name="name" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="value" type="xs:string" />
+		<xs:attribute name="ref" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="interfaceTyp">
+		<xs:sequence>
+			<xs:element name="transaction" type="transactionTyp"
+				minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="basePackage" type="xs:string" />
+		<xs:attribute name="language">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="zh" />
+					<xs:enumeration value="en" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="type">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="server" />
+					<xs:enumeration value="client" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="defaultScope">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="transition" />
+					<xs:enumeration value="this" />
+					<xs:enumeration value="step" />
+					<xs:enumeration value="transaction" />
+					<xs:enumeration value="global" />
+					<xs:enumeration value="" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="version" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="transactionTyp">
+		<xs:sequence minOccurs="0">
+			<xs:element name="process" type="processTyp" minOccurs="0"
+				maxOccurs="1" />
+			<xs:element name="step" type="stepTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="detail" type="xs:string" />
+		<xs:attribute name="version" type="xs:string" />
+		<xs:attribute name="singleton" type="xs:boolean" />
+		<xs:attribute name="reload" type="xs:boolean" />
+		<xs:attribute name="timeout" type="xs:long" />
+		<xs:attribute name="loglevel">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="trace" />
+					<xs:enumeration value="debug" />
+					<xs:enumeration value="info" />
+					<xs:enumeration value="warn" />
+					<xs:enumeration value="error" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="logic1ProcTyp">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:sequence>
+				<xs:element name="if" type="if1ProcTyp" />
+				<xs:element name="elseif" type="elseif1ProcTyp"
+					minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="else" type="logic1ProcTyp" minOccurs="0"
+					maxOccurs="1" />
+			</xs:sequence>
+			<xs:element name="step" type="step1ProcTyp" />
+			<xs:element name="import" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="if1ProcTyp">
+		<xs:complexContent>
+			<xs:extension base="logic1ProcTyp">
+				<xs:attribute name="condition" type="nonEmptyTyp" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="elseif1ProcTyp">
+		<xs:complexContent>
+			<xs:extension base="logic1ProcTyp">
+				<xs:attribute name="condition" type="nonEmptyTyp" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="step1ProcTyp">
+		<xs:attribute name="id" type="nonEmptyTyp" use="required" />
+	</xs:complexType>
+	<xs:complexType name="processTyp">
+		<xs:complexContent>
+			<xs:extension base="logic1ProcTyp">
+				<xs:sequence>
+					<xs:element name="exception" minOccurs="0">
+						<xs:complexType>
+							<xs:attribute name="id" type="nonEmptyTyp" use="required" />
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="stepTyp">
+		<xs:complexContent>
+			<xs:extension base="logicTyp">
+				<xs:attribute name="id" type="nonEmptyTyp" use="required" />
+				<xs:attribute name="level">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="info" />
+							<xs:enumeration value="debug" />
+							<xs:enumeration value="warn" />
+							<xs:enumeration value="error" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="logicTyp">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:sequence>
+				<xs:element name="if" type="ifTyp" />
+				<xs:element name="elseif" type="elseifTyp" minOccurs="0"
+					maxOccurs="unbounded" />
+				<xs:element name="else" type="logicTyp" minOccurs="0"
+					maxOccurs="1" />
+			</xs:sequence>
+			<xs:element name="while" type="whileTyp" />
+			<xs:element name="foreach" type="foreachTyp" />
+			<xs:element name="import" type="importTyp" />
+			<xs:element name="filter" type="filterTyp" />
+			<xs:element name="connection" type="logicConnTyp" />
+			<xs:element name="log" type="logTyp" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="logic1FilterTyp">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:sequence>
+				<xs:element name="if" type="if1FilterTyp" />
+				<xs:element name="elseif" type="elseif1FilterTyp"
+					minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="else" type="logic1FilterTyp" minOccurs="0"
+					maxOccurs="1" />
+			</xs:sequence>
+			<xs:element name="while" type="while1FilterTyp" />
+			<xs:element name="foreach" type="foreach1FilterTyp" />
+			<xs:element name="import" type="import1FilterTyp" />
+			<xs:element name="field" type="fieldTyp" />
+			<xs:element name="validator" type="validatorTyp" />
+			<xs:element name="convertor" type="convertorTyp" />
+			<xs:element name="call" type="callTyp" />
+			<xs:element name="continue" type="xs:anySimpleType" />
+			<xs:element name="break" type="xs:anySimpleType" />
+			<xs:element name="log" type="logTyp" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="logTyp">
+		<xs:attribute name="value" type="xs:string" use="required" />
+		<xs:attribute name="level" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="ifTyp">
+		<xs:complexContent>
+			<xs:extension base="logicTyp">
+				<xs:attribute name="condition" type="nonEmptyTyp" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="if1FilterTyp">
+		<xs:complexContent>
+			<xs:extension base="logic1FilterTyp">
+				<xs:attribute name="condition" type="nonEmptyTyp" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="elseifTyp">
+		<xs:complexContent>
+			<xs:extension base="logicTyp">
+				<xs:attribute name="condition" type="nonEmptyTyp" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="elseif1FilterTyp">
+		<xs:complexContent>
+			<xs:extension base="logic1FilterTyp">
+				<xs:attribute name="condition" type="nonEmptyTyp" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="filterTyp">
+		<xs:complexContent>
+			<xs:extension base="logic1FilterTyp">
+				<xs:attributeGroup ref="baseFilterAndConnAttr" />
+				<xs:attribute name="times" type="xs:string" />
+				<xs:attribute name="tag" type="xs:string" />
+				<xs:attribute name="via" type="xs:string" />
+				<xs:attribute name="scope" type="scopeTyp" />
+				<xs:attribute name="type" type="typeTyp" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="whileTyp">
+		<xs:complexContent>
+			<xs:extension base="logicTyp">
+				<xs:attribute name="condition" type="nonEmptyTyp" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="while1FilterTyp">
+		<xs:complexContent>
+			<xs:extension base="logic1FilterTyp">
+				<xs:attribute name="condition" type="nonEmptyTyp" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="foreachTyp">
+		<xs:complexContent>
+			<xs:extension base="logicTyp">
+				<xs:attributeGroup ref="foreachAttr" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:attributeGroup name="foreachAttr">
+		<xs:attribute name="tag" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="begin" type="xs:string" />
+		<xs:attribute name="end" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="step" type="xs:string" />
+		<xs:attribute name="scope" type="scopeTyp" />
+		<xs:attribute name="condition" type="xs:string" />
+		<xs:attribute name="ignoreException" type="xs:boolean" />
+	</xs:attributeGroup>
+	<xs:complexType name="foreach1FilterTyp">
+		<xs:complexContent>
+			<xs:extension base="logic1FilterTyp">
+				<xs:attributeGroup ref="foreachAttr" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="import1FilterTyp">
+		<xs:complexContent>
+			<xs:extension base="importTyp">
+				<xs:sequence>
+					<xs:element name="field" type="fieldTyp" minOccurs="0"
+						maxOccurs="unbounded" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="importTyp">
+		<xs:attribute name="ref" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="file" type="nonEmptyTyp" use="required" />
+	</xs:complexType>
+	<xs:complexType name="validatorTyp">
+		<xs:sequence>
+			<xs:element name="argument" type="argumentTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="nonEmptyTyp" />
+		<xs:attribute name="condition" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="errorcode" type="xs:string" />
+		<xs:attribute name="description" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="convertorTyp">
+		<xs:sequence>
+			<xs:element name="argument" type="argumentTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="tag" type="nonEmptyTyp" />
+		<xs:attribute name="value" type="xs:string" use="required" />
+		<xs:attribute name="scope" type="scopeTyp" />
+	</xs:complexType>
+	<xs:attributeGroup name="baseFilterAndConnAttr">
+		<xs:attribute name="ref" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="encoding" type="xs:string" />
+	</xs:attributeGroup>
+	<xs:complexType name="logicConnTyp">
+		<xs:sequence>
+			<xs:element name="property" type="connPropTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attributeGroup ref="baseFilterAndConnAttr" />
+		<xs:attribute name="type" type="typeTyp" />
+		<xs:attribute name="times" type="xs:string" />
+		<xs:attribute name="joinedid" type="xs:string" />
+	</xs:complexType>
+	<xs:simpleType name="typeTyp">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="in" />
+			<xs:enumeration value="out" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="directionTyp">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="in" />
+			<xs:enumeration value="out" />
+			<xs:enumeration value="inout" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="scopeTyp">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="step" />
+			<xs:enumeration value="transaction" />
+			<xs:enumeration value="global" />
+			<xs:enumeration value="this" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="fieldTyp">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="argument" type="argumentTyp" />
+			<xs:element name="subfield" type="subfieldTyp" />
+		</xs:choice>
+		<xs:attribute name="id" type="xs:string" />
+		<xs:attribute name="ref" type="xs:string" />
+		<xs:attribute name="tag" type="nonEmptyTyp" />
+		<xs:attribute name="etag" type="xs:string" />
+		<xs:attribute name="value" type="xs:string" />
+		<xs:attribute name="scope" type="scopeTyp" />
+		<xs:attribute name="type" type="nonEmptyTyp" />
+		<xs:attribute name="size" type="xs:string" />
+		<xs:attribute name="codetable" type="xs:string" />
+		<xs:attribute name="description" type="xs:string" />
+		<xs:attribute name="required" type="xs:boolean" />
+		<xs:attribute name="validator" type="xs:string" />
+		<xs:attribute name="split" type="xs:string" />
+		<xs:attribute name="direct" type="xs:string" />
+		<xs:attribute name="fill">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:pattern value="(left|right),[\s\S]" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="subfieldTyp">
+		<xs:complexContent>
+			<xs:extension base="fieldTyp">
+				<xs:attribute name="key" type="nonEmptyTyp" />
+				<xs:attribute name="srckey" type="nonEmptyTyp" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="moduleSubfieldTyp">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="subfield" type="moduleSubfieldTyp" />
+		</xs:choice>
+		<xs:attribute name="tag" type="nonEmptyTyp" />
+		<xs:attribute name="type" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="size" type="xs:integer" />
+		<xs:attribute name="varsize" type="xs:integer" />
+		<xs:attribute name="fill" type="xs:string" />
+		<xs:attribute name="direct" type="xs:string" />
+	</xs:complexType>
+	<xs:attributeGroup name="baseAttr">
+		<xs:attribute name="tag" type="nonEmptyTyp" />
+		<xs:attribute name="value" type="xs:string" use="required" />
+	</xs:attributeGroup>
+	<xs:complexType name="argumentTyp">
+		<xs:attributeGroup ref="baseAttr" />
+		<xs:attribute name="type" type="nonEmptyTyp" />
+		<xs:attribute name="direction" type="directionTyp" />
+		<xs:attribute name="description" type="xs:string" />
+		<xs:attribute name="id" type="xs:string" />
+	</xs:complexType>
+	<xs:simpleType name="nonEmptyTyp">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(\s*\S+\s*)+" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="propertyTyp">
+		<xs:attribute name="name" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="value" type="xs:string" />
+		<xs:attribute name="ref" type="xs:string" />
+		<xs:attribute name="encrypt" type="encrypt" />
+	</xs:complexType>
+	<xs:complexType name="connPropTyp">
+		<xs:sequence>
+			<xs:element name="argument" type="argumentTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="value" type="xs:string" />
+		<xs:attribute name="ref" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="callTyp">
+		<xs:sequence>
+			<xs:element name="argument" type="argumentTyp" minOccurs="0"
+				maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="tag" type="xs:string" />
+		<xs:attribute name="scope" type="xs:string" />
+		<xs:attribute name="interfaceName" type="nonEmptyTyp"
+			use="required" />
+		<xs:attribute name="transactionName" type="nonEmptyTyp"
+			use="required" />
+		<xs:attribute name="type" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="subx" />
+					<xs:enumeration value="sub" />
+					<xs:enumeration value="sub_conn" />
+					<xs:enumeration value="chain" />
+					<xs:enumeration value="sub_chain" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="mode">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="AS" />
+					<xs:enumeration value="S" />
+					<xs:enumeration value="single" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="pre" type="xs:string" />
+		<xs:attribute name="merge" type="xs:boolean" />
+	</xs:complexType>
+	<xs:simpleType name="encrypt">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BASE64" />
+			<xs:enumeration value="AES" />
+			<xs:enumeration value="DES" />
+			<xs:enumeration value="DESede" />
+			<xs:enumeration value="IDEA" />
+			<xs:enumeration value="PBE" />
+			<xs:enumeration value="RSA" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="funcTyp">
+		<xs:attribute name="class" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="namespace" type="nonEmptyTyp" use="required" />
+		<xs:attribute name="static" type="xs:boolean" use="required" />
+	</xs:complexType>
+
+</xs:schema>

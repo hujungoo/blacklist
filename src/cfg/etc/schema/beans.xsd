@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.brilliance.com.cn/beans" targetNamespace="http://www.brilliance.com.cn/beans" elementFormDefault="qualified">
+    <xs:element name="beans">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="class" type="classTyp" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+            <xs:attribute name="serviceid" type="nonEmptyTyp" />
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="classTyp">
+        <xs:sequence>
+            <xs:element name="method" type="methodTyp" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="name" type="nonEmptyTyp" use="required" />
+        <xs:attribute name="package" type="nonEmptyTyp" use="required" />
+        <xs:attribute name="type" type="nonEmptyTyp" use="required" />
+        <xs:attribute name="impl" type="nonEmptyTyp" use="required" />
+        <xs:attribute name="targetNamespace" type="nonEmptyTyp" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="methodTyp">
+        <xs:sequence>
+            <xs:element name="argument" type="argumentTyp" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="call" type="callTyp" />
+        </xs:sequence>
+        <xs:attribute name="name" type="nonEmptyTyp" use="required" />
+        <xs:attribute name="return" type="nonEmptyTyp" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="argumentTyp">
+        <xs:attribute name="name" type="nonEmptyTyp" use="required" />
+        <xs:attribute name="type" type="nonEmptyTyp" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="callTyp">
+        <xs:attribute name="interfaceName" type="nonEmptyTyp" use="required" />
+        <xs:attribute name="transactionName" type="nonEmptyTyp" use="required" />
+    </xs:complexType>
+
+    <xs:simpleType name="nonEmptyTyp">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="(\s*\S+\s*)+" />
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

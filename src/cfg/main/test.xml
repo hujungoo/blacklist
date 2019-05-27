@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xmlns="http://www.brilliance.com.cn/interface" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.brilliance.com.cn/interface ../etc/schema/interface.xsd">
+
+	<interface id="test" type="client" version="2.0"
+		defaultScope="transaction">
+
+		<transaction id="test" version="2.0">
+			<step id="123">
+				<filter type="in" ref="publicFilter">
+					<field tag="srcpath" value="D:\工作\新晨科技\邯郸银行\黑名单\swift\example\103(103+202).sf2"/>
+					<field tag="packInfo" value="${MTUnPackMessage:getSwfMsgInfoViaMsg(srcpath)}" />
+					<field tag="swiftfields" value="${MTUnPackMessage:getFieldsIn4V2(srcpath)}"/>
+					<field tag="mty" value="${packInfo.get('mty')}" />
+					<field tag="field" value="${swiftfields.get('50K')}"/>
+					<if condition="${null != field}">
+						<foreach tag="i" end="${field.size()}">
+							<field tag="fieldOne" value="${field[i]}"/>
+							<field tag="fieldOneDetail" value="${fieldOne.split('\r\n')}"/>
+							<log value="=============================${fieldOneDetail[0].length()}"/>
+							<if condition="${fieldOneDetail[0].startsWith('/')}">
+								<field tag="target" value="${fieldOne.substring(fieldOneDetail[0].length()+2)}"/>
+							</if>
+							<else>
+								<field tag="target" value="${fieldOne}"/>
+							</else>
+						</foreach>
+					</if>
+				</filter>
+			</step>
+		</transaction>
+
+		<transaction id="test1" version="2.0">
+			<step id="123">
+				<filter type="in" ref="publicFilter">
+					<field tag="shotTypes" value="NAME,ADDRESS"/>
+					<field tag="shotTypeArr" value="${shotTypes.split(',')}"/>
+					<field tag="shotTypeList" value="${Arrays:asList(shotTypeArr)}"/>
+					<log value="${shotTypeList.getClass()}"/>
+					<!--<field tag="shotTypeList" type="arraylist"/>
+					<foreach tag="i" end="${getArrayLen(shotTypeArr)}">
+						<field value="${shotTypeList.add(shotTypeArr[i])}"/>
+					</foreach>-->
+					<field tag="isContain" value="${shotTypeList.contains('NAME')}"/>
+					<field tag="isContain" value="${shotTypeList.contains('ADDRESS')}"/>
+				</filter>
+			</step>
+		</transaction>
+
+	</interface>
+
+
+	<functions>
+		<func class="java.util.Arrays" namespace="Arrays" static="true"/>
+	</functions>
+
+</root>
+
+	
+	

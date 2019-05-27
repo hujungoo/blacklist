@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xmlns="http://www.brilliance.com.cn/interface" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.brilliance.com.cn/interface ../etc/schema/interface.xsd">
+
+    <interface id="SWT910" type="server" version="2.0"
+               defaultScope="transaction">
+
+        <transaction id="parse" version="2.0">
+            <step id="1">
+                <filter ref="publicFilter" type="in">
+                    <import file="#{COMMONIMPORT}" ref="SWTHeader"/>
+                    <!--25K-->
+                    <field tag="msgid" value="25K"/>
+                    <field tag="desc" value="Account Identification"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLine56Country"/>
+
+                    <!--50A-->
+                    <field tag="msgid" value="50A"/>
+                    <field tag="desc" value="Ordering Customer"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLine56Country"/>
+                    <!--50F-->
+                    <field tag="msgid" value="50F"/>
+                    <field tag="desc" value="Ordering Customer"/>
+                    <import file="#{COMMONIMPORT}" ref="exceptFirstLineNameAndAddress"/>
+                    <!--50K-->
+                    <field tag="msgid" value="50K"/>
+                    <field tag="desc" value="Ordering Customer"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeExceptFirstLineNameAndAddress"/>
+
+                    <!--52A-->
+                    <field tag="msgid" value="52A"/>
+                    <field tag="desc" value="Ordering Institution"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLine56Country"/>
+                    <!--52D-->
+                    <field tag="msgid" value="52D"/>
+                    <field tag="desc" value="Ordering Institution"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeExceptFirstLineNameAndAddress"/>
+
+                    <!--56A-->
+                    <field tag="msgid" value="56A"/>
+                    <field tag="desc" value="Intermediary"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLine56Country"/>
+                    <!--56D-->
+                    <field tag="msgid" value="56D"/>
+                    <field tag="desc" value="Intermediary"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeExceptFirstLineNameAndAddress"/>
+
+                    <field value="${results}" scope="this"/>
+                </filter>
+            </step>
+        </transaction>
+
+    </interface>
+
+</root>
+
+	
+	

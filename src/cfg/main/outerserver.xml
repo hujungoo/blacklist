@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xmlns="http://www.brilliance.com.cn/interface" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.brilliance.com.cn/interface ../etc/schema/interface.xsd">
+
+    <interface id="outerserver" type="server" version="2.0" defaultScope="transaction">
+
+        <transaction id="init" version="2.0">
+            <step id="1">
+                <connection ref="jdbcconn"/>
+                <filter ref="sqlFilter" type="in">
+                    <field tag="sysparam" etag="select val from sysparam where code = 'index.dir'" type="LST"/>
+                    <field tag="indexDir" value="${sysparam[0]['val']}"/>
+                    <field tag="blackListShot" value="${BlackListLucenceSearchLoader:init(indexDir)}"/>
+                </filter>
+            </step>
+        </transaction>
+
+        <transaction id="parse" version="2.0">
+            <step id="1">
+                <filter ref="publicFilter" type="in">
+                    <field tag="encoding" value="#{ENCODING}"/>
+                    <field tag="content" value="${bytes2Str(__val, encoding)}"/>
+                </filter>
+
+                <filter ref="xmlFilter" type="in" via="${content}" encoding="#{ENCODING}">
+                    <field tag="icode" etag="BES.ICODE"/>
+                    <field tag="own" etag="BES.OWN"/>
+                    <field tag="ownref" etag="BES.OWNREF"/>
+                    <field tag="orgid" etag="BES.ORGID"/>
+                    <field tag="userid" etag="BES.USERID"/>
+                </filter>
+
+                <connection ref="jdbcconn"/>
+                <filter ref="sqlFilter" type="in">
+                    <field tag="dtaccesssystem" etag="select * from dtaccesssystem where syscode = ?" type="LST">
+                        <argument value="${own}"/>
+                    </field>
+                    <validator condition="${dtaccesssystem.size() > 0}" description="所属系统代码不存在"/>
+                    <validator condition="${dtaccesssystem[0]['stat']=='1'}" description="所属系统已停用"/>
+                    <field tag="hitcfgid" value="${dtaccesssystem[0]['hitcfgid']}"/>
+                    <field tag="whitcfgid" value="${dtaccesssystem[0]['whitcfgid']}"/>
+                    <field tag="usr" etag="select * from usr where nam = ?" type="LST">
+                        <argument value="${userid}"/>
+                    </field>
+                    <validator condition="${usr.size() > 0}" description="柜员不存在"/>
+                    <validator condition="${usr[0]['sta']!='1'}" description="柜员已注销"/>
+                    <field tag="sysorgan" etag="select * from sysorgan where orgcode = ?" type="LST">
+                        <argument value="${orgid}"/>
+                    </field>
+                    <validator condition="${sysorgan.size() > 0}" description="机构号不存在"/>
+                    <validator condition="${sysorgan[0]['state']=='1'}" description="机构已停用"/>
+                </filter>
+
+                <filter ref="publicFilter" type="in">
+                    <call tag="result" type="chain" interfaceName="${icode}" transactionName="request">
+                        <argument value="${content}"/>
+                        <argument value="${hitcfgid}"/>
+                        <argument value="${whitcfgid}"/>
+                    </call>
+                    <field value="${result.content}" scope="this"/>
+                </filter>
+            </step>
+
+            <step id="exception">
+                <filter ref="xmlFilter" type="out" encoding="#{ENCODING}">
+                    <field etag="BES.ICODE" value="${icode}"/>
+                    <field etag="BES.OWN" value="${own}"/>
+                    <field etag="BES.OWNREF" value="${ownref}"/>
+                    <field etag="BES.STATUS" value="0"/>
+                    <field etag="BES.NOTE" value="${super.description}"/>
+                </filter>
+            </step>
+        </transaction>
+
+    </interface>
+
+</root>
+
+	
+	

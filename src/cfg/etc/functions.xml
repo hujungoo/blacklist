@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<functions xmlns="http://www.brilliance.com.cn/function" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.brilliance.com.cn/function schema/function.xsd">
+
+	<func static="true" namespace="String" class="java.lang.String"/>
+	<func static="true" namespace="BlackListLucenceSearchLoader" class="com.brilliance.word.blacklist.loader.BlackListLucenceSearchLoader"/>
+	<func static="true" namespace="MTUnPackMessage" class="com.brilliance.swift.MTUnPackMessage"/>
+</functions>

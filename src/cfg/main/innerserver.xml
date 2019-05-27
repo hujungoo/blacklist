@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xmlns="http://www.brilliance.com.cn/interface" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.brilliance.com.cn/interface ../etc/schema/interface.xsd">
+
+    <interface id="innerserver" type="server" version="2.0" defaultScope="transaction">
+
+        <transaction id="parse" version="2.0">
+            <step id="1">
+                <filter ref="publicFilter" type="in">
+                    <field tag="encoding" value="#{ENCODING}"/>
+                    <field tag="content" value="${bytes2Str(__val, encoding)}"/>
+                </filter>
+
+                <filter ref="publicFilter" type="in">
+                    <field tag="params" value="${fromJson(content,'map')}"/>
+                    <call tag="result" type="chain" interfaceName="INN${params['interface']}"
+                          transactionName="${params['transaction']}">
+                        <argument value="${params}"/>
+                    </call>
+                    <field value="${toJson(result.content)}" scope="this"/>
+                </filter>
+            </step>
+            <step id="exception">
+                <filter ref="publicFilter" type="in">
+                    <field tag="ret" type="map"/>
+                    <field value="${ret.put('retcode','1')}"/>
+                    <field value="${ret.put('retmsg',super.description)}"/>
+                    <field value="${ret}" scope="this"/>
+                </filter>
+            </step>
+        </transaction>
+
+    </interface>
+
+</root>
+
+	
+	

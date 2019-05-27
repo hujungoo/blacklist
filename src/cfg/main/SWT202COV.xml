@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xmlns="http://www.brilliance.com.cn/interface" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.brilliance.com.cn/interface ../etc/schema/interface.xsd">
+
+    <interface id="SWT202COV" type="server" version="2.0"
+               defaultScope="transaction">
+
+        <transaction id="parse" version="2.0">
+            <step id="1">
+                <filter ref="publicFilter" type="in">
+                    <import file="#{COMMONIMPORT}" ref="SWTHeader"/>
+
+                    <!--52A-->
+                    <field tag="msgid" value="52A"/>
+                    <field tag="desc" value="Ordering Institution"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLine56Country"/>
+                    <!--52D-->
+                    <field tag="msgid" value="52D"/>
+                    <field tag="desc" value="Ordering Institution"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeExceptFirstLineNameAndAddress"/>
+
+                    <!--53A-->
+                    <field tag="msgid" value="53A"/>
+                    <field tag="desc" value="Sender's Correspondent"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLine56Country"/>
+                    <!--53B-->
+                    <field tag="msgid" value="53B"/>
+                    <field tag="desc" value="Sender's Correspondent"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLineAddress"/>
+                    <!--53D-->
+                    <field tag="msgid" value="53D"/>
+                    <field tag="desc" value="Sender's Correspondent"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeExceptFirstLineNameAndAddress"/>
+
+                    <!--54A-->
+                    <field tag="msgid" value="54A"/>
+                    <field tag="desc" value="Receiver's Correspondent"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLine56Country"/>
+                    <!--54B-->
+                    <field tag="msgid" value="54B"/>
+                    <field tag="desc" value="Receiver's Correspondent"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLineAddress"/>
+                    <!--54D-->
+                    <field tag="msgid" value="54D"/>
+                    <field tag="desc" value="Receiver's Correspondent"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeExceptFirstLineNameAndAddress"/>
+
+                    <!--56A-->
+                    <field tag="msgid" value="56A"/>
+                    <field tag="desc" value="Intermediary"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLine56Country"/>
+                    <!--56D-->
+                    <field tag="msgid" value="56D"/>
+                    <field tag="desc" value="Intermediary"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeExceptFirstLineNameAndAddress"/>
+
+                    <!--57A-->
+                    <field tag="msgid" value="57A"/>
+                    <field tag="desc" value="Account With Institution"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLine56Country"/>
+                    <!--57B-->
+                    <field tag="msgid" value="57B"/>
+                    <field tag="desc" value="Account With Institution"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLineAddress"/>
+                    <!--57D-->
+                    <field tag="msgid" value="57D"/>
+                    <field tag="desc" value="Account With Institution"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeExceptFirstLineNameAndAddress"/>
+
+                    <!--58A-->
+                    <field tag="msgid" value="58A"/>
+                    <field tag="desc" value="Beneficiary Institution"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLine56Country"/>
+                    <!--58D-->
+                    <field tag="msgid" value="58D"/>
+                    <field tag="desc" value="Beneficiary Institution"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeExceptFirstLineNameAndAddress"/>
+
+                    <!--50A-->
+                    <field tag="msgid" value="50A"/>
+                    <field tag="desc" value="Ordering Customer"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLine56Country"/>
+                    <!--50F-->
+                    <field tag="msgid" value="50F"/>
+                    <field tag="desc" value="Ordering Customer"/>
+                    <import file="#{COMMONIMPORT}" ref="exceptFirstLineNameAndAddress"/>
+                    <!--50K-->
+                    <field tag="msgid" value="50K"/>
+                    <field tag="desc" value="Ordering Customer"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeExceptFirstLineNameAndAddress"/>
+
+                    <!--59-->
+                    <field tag="msgid" value="59"/>
+                    <field tag="desc" value="Beneficiary Customer"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeExceptFirstLineNameAndAddress"/>
+                    <!--59A-->
+                    <field tag="msgid" value="59A"/>
+                    <field tag="desc" value="Beneficiary Customer"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeSecondLine56Country"/>
+                    <!--59F-->
+                    <field tag="msgid" value="59F"/>
+                    <field tag="desc" value="Beneficiary Customer"/>
+                    <import file="#{COMMONIMPORT}" ref="maybeExceptFirstLineNameAndAddress"/>
+
+                    <field value="${results}" scope="this"/>
+                </filter>
+            </step>
+        </transaction>
+
+    </interface>
+
+</root>
+
+	
+	

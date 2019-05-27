@@ -1,0 +1,30 @@
+select * from DTDETECTFLOW;
+select * from DTDETECTRESULT where DETECTID='1905231400000384' and msgid= '50K';
+select * from DTDETECTRESULTDETAIL where resultid in (select inr from DTDETECTRESULT where DETECTID= '1905231400000381');
+select * from DTHITRATIOCFG;
+select * from olriskcountry;
+select * from blidnumdetail where IDVALUELOWER='car';
+select * from olidnumdetail;
+select * from sysparam;
+select * from DTWHITERESULTDETAIL;
+select * from OLWHITELIST;
+
+select * from usr;
+select * from sysorgan;
+select * from dtaccesssystem;
+
+truncate table DTDETECTFLOW;
+truncate table DTDETECTRESULT;
+truncate table DTDETECTRESULTDETAIL;
+
+insert into DTHITRATIOCFG (inr, namelimit, addrlimit, idnumlimit, cnylimit, rolelimit, datelimit, othlimit)
+values ('00000000', 60, 60, 80, 80, 80, 80, 80);
+
+insert into olidnumdetail(inr,listno,idtype,idvalue,idvaluelower) values('S0000001','TST0001','TEST','CAR','car');
+insert into olidnumdetail(inr,listno,idtype,idvalue,idvaluelower) values('S0000002','TST0002','TEST','Test','test');
+commit;
+
+update sysparam set val = '/root/bld/blacklist_interface/index' where CODE='index.dir';
+commit;
+select listno from blidnumdetail where IDVALUE = 'CFI.001'
+
